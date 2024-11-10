@@ -1,3 +1,9 @@
+package ManagerPackage;
+
+import Tasks.Epic;
+import Tasks.SubTask;
+import Tasks.Task;
+import Tasks.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +52,7 @@ public class TaskManager {
         Epic epic = epics.get(epicID);
         epic.addSubtaskID(taskID);
         this.subTasks.put(taskID, subTask);
-        generateNewAndUpdateEpic(epic);
+        updateEpic(epic);
     }
 
     public String getTask(int id) {
@@ -76,7 +82,7 @@ public class TaskManager {
         Epic epic = epics.get(epicID);
         epic.removeSubIdByValue(id);
         subTasks.remove(id);
-        generateNewAndUpdateEpic(epic);
+        updateEpic(epic);
 
     }
 
@@ -88,6 +94,7 @@ public class TaskManager {
         epics.remove(epicID);
 
 
+
     }
 
     public void removeTaskById(int id) {
@@ -96,6 +103,7 @@ public class TaskManager {
 
     public void clearAllEpics() {
         epics.clear();
+        subTasks.clear();
 
     }
 
@@ -114,13 +122,13 @@ public class TaskManager {
     public void updateSubTask(SubTask subTask) {
         int id = subTask.getId();
         subTasks.put(id, subTask);
-        System.out.println(subTasks);
+        /*System.out.println(subTasks);*/
         Epic epic = epics.get(subTask.getepicID());
-        generateNewAndUpdateEpic(epic);
+        updateEpic(epic);
     }
 
     public void updateEpic(Epic epic) {
-        int id = epic.getId();
+        int id = epic.getId(); // необходимо обновлять имя и описание
         epics.put(id, epic);
     }
 
@@ -139,20 +147,20 @@ public class TaskManager {
         tasks.put(id, task);
     }
 
-    public void calculateAndSetEpicStatus(Epic epic) {
+    private void calculateAndSetEpicStatus(Epic epic) {
         int newStatus = 0;
         int doneStatus = 0;
-        ArrayList<Integer> IDs = epic.getSubtasksIDs();
-        if (IDs.size() == 0)
+        ArrayList<Integer> ids = epic.getSubtasksIDs();
+        if (ids.size() == 0)
             epic.setStatus(TaskStatus.NEW);
 
-        for (int id : IDs) {
+        for (int id : ids) {
             SubTask subTask = this.subTasks.get(id);
             switch (subTask.getStatus()) {
-                case NEW:
+                case TaskStatus.NEW:
                     newStatus++;
                     break;
-                case DONE:
+                case TaskStatus.DONE:
                     doneStatus++;
                     break;
                 default:
@@ -161,11 +169,11 @@ public class TaskManager {
             }
         }
 
-        if (doneStatus == IDs.size()) {
+        if (doneStatus == ids.size()) {
             epic.setStatus(TaskStatus.DONE);
             return;
         }
-        if (newStatus == IDs.size()) {
+        if (newStatus == ids.size()) {
             epic.setStatus(TaskStatus.NEW);
             return;
         }

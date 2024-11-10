@@ -1,4 +1,4 @@
-
+package Tasks;
 
 public class SubTask extends Task {
 
@@ -20,7 +20,7 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "SubTask{" +
+        return "Tasks.SubTask{" +
                 " id=" + this.id + " " +
                 ", name=" + this.name + " " +
                 ", description=" + this.description + " " +
