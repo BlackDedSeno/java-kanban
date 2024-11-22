@@ -1,5 +1,5 @@
-import ManagerPackage.TaskManager;
-import Tasks.*;
+import managerPackage.TaskManager;
+import tasks.*;
 
 class Main {
     public static void main(String[] args) {

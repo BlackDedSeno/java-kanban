@@ -1,9 +1,9 @@
-package ManagerPackage;
+package managerPackage;
 
-import Tasks.Epic;
-import Tasks.SubTask;
-import Tasks.Task;
-import Tasks.TaskStatus;
+import tasks.Epic;
+import tasks.SubTask;
+import tasks.Task;
+import tasks.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,27 +120,27 @@ public class TaskManager {
     }
 
     public void updateSubTask(SubTask subTask) {
-        int id = subTask.getId();
-        subTasks.put(id, subTask);
-        /*System.out.println(subTasks);*/
-        Epic epic = epics.get(subTask.getepicID());
-        updateEpic(epic);
+        if (subTasks.isEmpty()){
+            System.out.println("Список задач пуст.");
+        } else {
+            int id = subTask.getId();
+            subTasks.put(id, subTask);
+            /*System.out.println(subTasks);*/
+            Epic epic = epics.get(subTask.getepicID());
+            updateEpic(epic);
+        }
     }
 
     public void updateEpic(Epic epic) {
-        int id = epic.getId(); // необходимо обновлять имя и описание
-        epics.put(id, epic);
+        if (epics.isEmpty()){
+            System.out.println("Список задач пуст.");
+        } else {
+            int id = epic.getId();
+            epics.put(id, epic);
+        }
+
     }
 
-    public void generateNewAndUpdateEpic(Epic epic) {
-        Epic newEpic = new Epic(epic.getName(), epic.getDescription(), epic.getId());
-        ArrayList<Integer> subIDs = epic.getSubtasksIDs();
-        for (Integer subId : subIDs) {
-            newEpic.addSubtaskID(subId);
-        }
-        calculateAndSetEpicStatus(newEpic);
-        updateEpic(newEpic);
-    }
 
     public void updateTask(Task task) {
         int id = task.getId();
