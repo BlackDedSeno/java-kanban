@@ -120,22 +120,26 @@ public class TaskManager {
     }
 
     public void updateSubTask(SubTask subTask) {
-        if (subTasks.isEmpty()){
-            System.out.println("Список задач пуст.");
+        int id = subTask.getId();
+        if (!subTasks.containsKey(id)) {
+            System.out.println("Подзадача с ID " + id + " не найдена.");
         } else {
-            int id = subTask.getId();
             subTasks.put(id, subTask);
             /*System.out.println(subTasks);*/
             Epic epic = epics.get(subTask.getepicID());
-            updateEpic(epic);
+            if (epic != null) {
+                updateEpic(epic);
+            } else {
+                System.out.println("Эпик с ID " + subTask.getepicID() + " не найден для подзадачи " + id);
+            }
         }
     }
 
     public void updateEpic(Epic epic) {
-        if (epics.isEmpty()){
-            System.out.println("Список задач пуст.");
+        int id = epic.getId();
+        if (!epics.containsKey(id)) {
+            System.out.println("Эпик с ID " + id + " не найден.");
         } else {
-            int id = epic.getId();
             epics.put(id, epic);
         }
 
