@@ -1,10 +1,11 @@
+import managerPackage.InMemoryTaskManager;
 import managerPackage.TaskManager;
 import tasks.*;
 
 class Main {
     public static void main(String[] args) {
 
-        TaskManager manager = new TaskManager();
+        TaskManager manager = new InMemoryTaskManager();
 
         Task task1 = new Task("Задача 1", "Выполнение задачи  1");
         Task task2 = new Task(null, null);
@@ -59,5 +60,12 @@ class Main {
         System.out.println(manager.getAllEpics());
         System.out.println(manager.getAllTasks());
         System.out.println(manager.getAllSubTasks());
+
+
+            System.out.println("История");
+            System.out.println(manager.getHistory());
+            System.out.println();
+
+
     }
 }
