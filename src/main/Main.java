@@ -1,3 +1,5 @@
+package main;
+
 import managerPackage.InMemoryTaskManager;
 import managerPackage.TaskManager;
 import tasks.*;

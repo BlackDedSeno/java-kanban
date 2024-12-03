@@ -75,8 +75,8 @@ public class InMemoryTaskManager implements TaskManager {
     public String getSubTask(int id) {
         historyManager.add(subTasks.get(id));
         return subTasks.get(id).toString();
-
     }
+
     @Override
     public String getEpic(int id) {
         historyManager.add(epics.get(id));
@@ -171,7 +171,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.put(id, task);
     }
 
-    public void calculateAndSetEpicStatus(Epic epic) { //при изменении модификатора доступа возникает ошибка
+    private void calculateAndSetEpicStatus(Epic epic) { //при изменении модификатора доступа возникает ошибка
         int newStatus = 0;
         int doneStatus = 0;
         ArrayList<Integer> ids = epic.getSubtasksIDs();

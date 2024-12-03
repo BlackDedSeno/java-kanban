@@ -47,10 +47,6 @@ public interface TaskManager {
 
     void updateTask(Task task);
 
-    void calculateAndSetEpicStatus(Epic epic);
-
-
-
     List getHistory();
 
 
