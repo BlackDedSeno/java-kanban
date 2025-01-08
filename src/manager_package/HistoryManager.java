@@ -1,4 +1,4 @@
-package managerPackage;
+package manager_package;
 
 
 import java.util.List;
