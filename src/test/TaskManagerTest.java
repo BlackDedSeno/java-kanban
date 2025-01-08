@@ -1,8 +1,8 @@
 package test;
 
-import manager_package.InMemoryHistoryManager;
-import manager_package.InMemoryTaskManager;
-import manager_package.TaskManager;
+import managerpackage.InMemoryHistoryManager;
+import managerpackage.InMemoryTaskManager;
+import managerpackage.TaskManager;
 import org.junit.jupiter.api.Test;
 import tasks.*;
 
