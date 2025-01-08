@@ -71,6 +71,7 @@ public class InMemoryTaskManager implements TaskManager {
         return tasks.get(id).toString();
 
     }
+
     @Override
     public String getSubTask(int id) {
         historyManager.add(subTasks.get(id));
@@ -112,6 +113,7 @@ public class InMemoryTaskManager implements TaskManager {
         epics.remove(epicID);
 
     }
+
     @Override
     public void removeTaskById(int id) {
         tasks.remove(id);
@@ -123,6 +125,7 @@ public class InMemoryTaskManager implements TaskManager {
         subTasks.clear();
 
     }
+
     @Override
     public void clearAllTasks() {
         tasks.clear();
