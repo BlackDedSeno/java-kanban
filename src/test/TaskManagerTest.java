@@ -77,6 +77,7 @@ public class TaskManagerTest {
         assertEquals(0, manager.getAllSubTasks().size());
 
     }
+
     @Test
     void testRemoveEpicById() {
         TaskManager manager = new InMemoryTaskManager();
@@ -149,13 +150,14 @@ public class TaskManagerTest {
     }
 
     @Test
-    void testGetHistory(){
+    void testGetHistory() {
         TaskManager manager = new InMemoryTaskManager();
         Task task1 = new Task("Задача 1", "Описание 1");
         manager.addNewTask(task1);
         manager.getTask(task1.getId());
         assertFalse(manager.getHistory().isEmpty());
     }
+
     @Test
     void addTaskAddedToHistory() {
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
@@ -164,6 +166,7 @@ public class TaskManagerTest {
         List<Task> history = historyManager.getHistory();
         assertTrue(history.contains(task), "Список истории должен создержать одну задачу.");
     }
+
     @Test
     void addDuplicateTask() {
         InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
