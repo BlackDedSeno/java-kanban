@@ -8,7 +8,7 @@
 
     public class InMemoryHistoryManager implements HistoryManager<Task> {
        /* private final LinkedList<Task> historyList = new LinkedList<>();*/ //список истории через список
-        private final Map <Integer, Node<Task>> historyMap = new HashMap<>();
+        private final Map<Integer, Node<Task>> historyMap = new HashMap<>();
 
         /*int maxSize = 10; */// убираем лимит списка историй
 
@@ -93,7 +93,7 @@
 
 
         @Override
-        public void remove(int id){
+        public void remove(int id) {
             if (historyMap.containsKey(id)) {
                 removeNode(historyMap.get(id));
                 historyMap.remove(id);
