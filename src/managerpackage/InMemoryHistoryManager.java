@@ -72,7 +72,7 @@
 
         @Override
         public void add(Task task) {
-            if (task != null){
+            if (task != null) {
                 remove(task.getId());
             } else {
                 System.out.println("Ошибка добавления задачи.");
