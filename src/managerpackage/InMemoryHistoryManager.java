@@ -3,27 +3,11 @@
 
 
     import tasks.Task;
-
     import java.util.*;
 
     public class InMemoryHistoryManager implements HistoryManager<Task> {
-       /* private final LinkedList<Task> historyList = new LinkedList<>();*/ //список истории через список
+
         private final Map<Integer, Node<Task>> historyMap = new HashMap<>();
-
-        /*int maxSize = 10; */// убираем лимит списка историй
-
-        private static class Node<T> {
-
-            private  T data;
-            private Node<T> next;
-            private Node<T> prev;
-
-            private Node(T data) {
-                this.data = data;
-                this.next = null;
-                this.prev = null;
-            }
-        }
 
         private Node<Task> head;
         private Node<Task> tail;
@@ -68,26 +52,32 @@
             }
         }
 
+        private static class Node<T> {
+
+            private  T data;
+            private Node<T> next;
+            private Node<T> prev;
+
+            private Node(T data) {
+                this.data = data;
+                this.next = null;
+                this.prev = null;
+            }
+        }
 
         @Override
         public List<Task> getHistory() {
-        /*return new ArrayList<>(historyList);*/ //старая реализация метода
             return getTasks();
-
         }
 
         @Override
         public void add(Task task) {
-            /*if (task != null) {
-                historyList.add(task);
+            if (task != null){
+                remove(task.getId());
             } else {
-                System.out.println("Ошибка добавления задачи в историю");
+                System.out.println("Ошибка добавления задачи.");
             }
-            *//*if (historyList.size() == maxSize) {
-                historyList.remove(0);
-            }*//* //убираем проверку списка истррии
-            historyList.addFirst(task);*/ //старая реализация метода
-            remove(task.getId());
+
             historyMap.put(task.getId(), linkLast(task));
         }
 
