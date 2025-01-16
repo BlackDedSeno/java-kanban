@@ -75,7 +75,7 @@
         }
 
         @Override
-        public void removeAll () {
+        public void removeAll() {
             historyMap.clear();
         }
 
