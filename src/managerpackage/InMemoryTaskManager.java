@@ -118,6 +118,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeTaskById(int id) {
+        historyManager.remove(id);
         tasks.remove(id);
     }
 
@@ -131,6 +132,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void clearAllTasks() {
         tasks.clear();
+        historyManager.removeAll();
     }
 
     @Override

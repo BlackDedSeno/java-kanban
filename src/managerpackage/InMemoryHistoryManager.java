@@ -9,22 +9,7 @@
 
         private final Map<Integer, Node<Task>> historyMap = new HashMap<>();
 
-        private Node<Task> head;
-        private Node<Task> tail;
 
-        private Node<Task> linkLast(Task task) {
-            if (head == null) {
-                head = new Node<>(task);
-                tail = head;
-            } else {
-                Node<Task> oldTail = tail;
-                tail = new Node<>(task);
-                tail.prev = oldTail;
-                oldTail.next = tail;
-            }
-
-            return tail;
-        }
 
         private List<Task> getTasks() {
             List<Task> tasksList = new ArrayList<>();
@@ -88,6 +73,27 @@
                 removeNode(historyMap.get(id));
                 historyMap.remove(id);
             }
+        }
+        @Override
+        public void removeAll (){
+            historyMap.clear();
+        }
+
+        private Node<Task> head;
+        private Node<Task> tail;
+
+        private Node<Task> linkLast(Task task) {
+            if (head == null) {
+                head = new Node<>(task);
+                tail = head;
+            } else {
+                Node<Task> oldTail = tail;
+                tail = new Node<>(task);
+                tail.prev = oldTail;
+                oldTail.next = tail;
+            }
+
+            return tail;
         }
 
     }
