@@ -66,7 +66,6 @@
             historyMap.put(task.getId(), linkLast(task));
         }
 
-
         @Override
         public void remove(int id) {
             if (historyMap.containsKey(id)) {
@@ -74,8 +73,9 @@
                 historyMap.remove(id);
             }
         }
+
         @Override
-        public void removeAll (){
+        public void removeAll () {
             historyMap.clear();
         }
 
