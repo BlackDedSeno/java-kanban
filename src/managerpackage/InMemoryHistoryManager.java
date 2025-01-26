@@ -74,11 +74,6 @@
             }
         }
 
-        @Override
-        public void removeAll() {
-            historyMap.clear();
-        }
-
         private Node<Task> head;
         private Node<Task> tail;
 

@@ -11,7 +11,6 @@ public interface HistoryManager<T> {
 
     void remove(int id);
 
-    void removeAll();
 }
 
 
