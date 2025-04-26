@@ -1,7 +1,7 @@
 package main;
 
-import managerPackage.InMemoryTaskManager;
-import managerPackage.TaskManager;
+import managerpackage.InMemoryTaskManager;
+import managerpackage.TaskManager;
 import tasks.*;
 
 class Main {

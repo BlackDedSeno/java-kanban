@@ -1,4 +1,4 @@
-package managerPackage;
+package managerpackage;
 
 import tasks.Epic;
 import tasks.SubTask;
@@ -6,7 +6,6 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
-;
 
 public interface TaskManager {
     ArrayList<Task> getAllTasks();
@@ -48,6 +47,5 @@ public interface TaskManager {
     void updateTask(Task task);
 
     List getHistory();
-
 
 }

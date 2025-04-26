@@ -16,7 +16,7 @@ public class Epic extends Task {
         subtaskIDs = new ArrayList<>();
     }
 
-    public void setStatus(TaskStatus status){
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
@@ -27,7 +27,7 @@ public class Epic extends Task {
     public ArrayList<Integer> getSubtasksIDs() {
         return this.subtaskIDs;
     }
-    
+
     public void clearSubIDs() {
         subtaskIDs.clear();
     }
