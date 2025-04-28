@@ -205,7 +205,7 @@ public class TaskManagerTest {
     @Test
     void testEmptyFileLoad() throws IOException {
         Path file = tempDir.resolve("empty.csv");
-        Files.createFile(file);  // <-- создаём пустой файл
+        Files.createFile(file);
         FileBackedTaskManager manager = FileBackedTaskManager.loadFromFile(file.toFile());
         assertTrue(manager.getAllTasks().isEmpty());
     }
