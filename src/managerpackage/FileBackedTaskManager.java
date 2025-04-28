@@ -41,7 +41,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    // Сериализация задачи в CSV
     private String toString(Task task) {
         String type = "TASK";
         String epicId = "";
@@ -72,19 +71,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
             String line;
             while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
                 Task task = fromString(line);
-                if (task == null) continue;
 
                 if (task.getId() > maxId) {
                     maxId = task.getId();
                 }
 
                 if (task instanceof Epic) {
-                    manager.addNewEpic((Epic) task);
+                    manager.epics.put(task.getId(), (Epic) task);
                 } else if (task instanceof SubTask) {
-                    manager.addNewSubTask((SubTask) task);
+                    manager.subTasks.put(task.getId(), (SubTask) task);
                 } else {
-                    manager.addNewTask(task);
+                    manager.tasks.put(task.getId(), task);
                 }
             }
 
@@ -94,19 +95,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new ManagerSaveException("Ошибка загрузки из файла", e);
         }
 
-        for (SubTask subTask : manager.getAllSubTasks()) {
+        for (SubTask subTask : manager.subTasks.values()) {
             Epic epic = manager.epics.get(subTask.getepicID());
             if (epic != null) {
                 epic.addSubtaskID(subTask.getId());
                 manager.updateEpic(epic);
             }
         }
+
         return manager;
     }
 
     private static Task fromString(String value) {
-        String[] taskData = value.split(",");
-        if (taskData.length < 6) {
+        String[] taskData = value.split(",", -1);
+        if (taskData.length < 5) {
             throw new ManagerSaveException("Некорректный формат строки: " + value);
         }
 
@@ -130,7 +132,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 return epic;
 
             case "SUBTASK":
-                if (epicId.isEmpty()) {
+                if (epicId == null || epicId.isEmpty()) {
                     throw new ManagerSaveException("У подзадачи отсутствует Epic ID");
                 }
                 SubTask subTask = new SubTask(name, description, id, Integer.parseInt(epicId), status);
@@ -189,5 +191,4 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         super.clearAllSubTasks();
         save();
     }
-
 }

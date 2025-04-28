@@ -1,11 +1,17 @@
 package test;
 
+import managerpackage.FileBackedTaskManager;
 import managerpackage.InMemoryHistoryManager;
 import managerpackage.InMemoryTaskManager;
 import managerpackage.TaskManager;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import tasks.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -193,7 +199,48 @@ public class TaskManagerTest {
         assertTrue(history.contains(task2), "В списке должна быть вторая задача");
     }
 
+    @TempDir
+    Path tempDir;
 
+    @Test
+    void testEmptyFileLoad() throws IOException {
+        Path file = tempDir.resolve("empty.csv");
+        Files.createFile(file);  // <-- создаём пустой файл
+        FileBackedTaskManager manager = FileBackedTaskManager.loadFromFile(file.toFile());
+        assertTrue(manager.getAllTasks().isEmpty());
+    }
 
+    @Test
+    void testSaveAndLoadTasks(@TempDir Path tempDir) throws IOException {
+        File file = tempDir.resolve("tasks.csv").toFile();
+        FileBackedTaskManager manager = new FileBackedTaskManager(file);
 
+        Task task = new Task("Тестовая задача", "Описание");
+        manager.addNewTask(task);
+
+        Epic epic = new Epic("Тестовый эпик", "Описание эпика");
+        manager.addNewEpic(epic);
+
+        SubTask subTask = new SubTask("Тестовая подзадача", "Описание подзадачи", epic.getId());
+        manager.addNewSubTask(subTask);
+
+        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
+
+        assertEquals(1, loadedManager.getAllTasks().size());
+        assertEquals(1, loadedManager.getAllEpics().size());
+        assertEquals(1, loadedManager.getAllSubTasks().size());
+    }
+
+    @Test
+    void testBrokenFileLoad(@TempDir Path tempDir) throws IOException {
+        File file = tempDir.resolve("broken.csv").toFile();
+        Files.writeString(file.toPath(), "id,type,name,status,description,epic\nbroken,data,line");
+
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            FileBackedTaskManager.loadFromFile(file);
+        });
+
+        String expectedMessage = "Некорректный формат строки";
+        assertTrue(exception.getMessage().contains(expectedMessage));
+    }
     }
