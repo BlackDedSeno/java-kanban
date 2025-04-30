@@ -1,9 +1,6 @@
 package test;
 
-import managerpackage.FileBackedTaskManager;
-import managerpackage.InMemoryHistoryManager;
-import managerpackage.InMemoryTaskManager;
-import managerpackage.TaskManager;
+import managerpackage.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -13,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -156,5 +155,53 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         manager.addNewTask(task1);
         manager.getTask(task1.getId());
         assertFalse(manager.getHistory().isEmpty());
+    }
+
+    @Test
+    void testEpicTimeCalculation() {
+        TaskManager manager = Managers.getDefault();
+        Epic epic = new Epic("Epic", "Description");
+        manager.addNewEpic(epic);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        SubTask sub1 = new SubTask("Sub1", "Desc1", epic.getId());
+        sub1.setStartTime(now);
+        sub1.setDuration(Duration.ofHours(1));
+        manager.addNewSubTask(sub1);
+
+        SubTask sub2 = new SubTask("Sub2", "Desc2", epic.getId());
+        sub2.setStartTime(now.plusHours(2));
+        sub2.setDuration(Duration.ofHours(3));
+        manager.addNewSubTask(sub2);
+
+        assertEquals(now, epic.getStartTime());
+        assertEquals(now.plusHours(5), epic.getEndTime());
+        assertEquals(Duration.ofHours(4), epic.getDuration());
+    }
+
+    @Test
+    void testPrioritizedTasks() {
+        TaskManager manager = Managers.getDefault();
+        LocalDateTime now = LocalDateTime.now();
+
+        Task task1 = new Task("Task1", "Desc1");
+        task1.setStartTime(now.plusHours(3));
+        task1.setDuration(Duration.ofHours(1));
+
+        Task task2 = new Task("Task2", "Desc2");
+        task2.setStartTime(now.plusHours(1));
+        task2.setDuration(Duration.ofHours(1));
+
+        Task task3 = new Task("Task3", "Desc3");
+
+        manager.addNewTask(task1);
+        manager.addNewTask(task2);
+        manager.addNewTask(task3);
+
+        List<Task> prioritized = manager.getPrioritizedTasks();
+        assertEquals(2, prioritized.size());
+        assertEquals(task2, prioritized.get(0));
+        assertEquals(task1, prioritized.get(1));
     }
 }

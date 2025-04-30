@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
@@ -58,6 +60,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 task.getName(),
                 task.getStatus().name(),
                 task.getDescription(),
+                task.getStartTime() != null ? task.getStartTime().toString() : "",
+                String.valueOf(task.getDuration().toMinutes()),
                 epicId
         );
     }
@@ -117,11 +121,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String name = taskData[2];
         TaskStatus status = TaskStatus.valueOf(taskData[3]);
         String description = taskData[4];
-        String epicId = taskData.length > 5 ? taskData[5] : "";
+        LocalDateTime startTime = taskData[5].isEmpty() ? null : LocalDateTime.parse(taskData[5]);
+        Duration duration = Duration.ofMinutes(Long.parseLong(taskData[6]));
+        String epicId = taskData[7];
 
         switch (type) {
             case "TASK":
-                Task task = new Task(name, description, id, status);
+                Task task = new Task(name, description, id, status, startTime, duration);
                 task.setID(id);
                 return task;
 
@@ -135,7 +141,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 if (epicId == null || epicId.isEmpty()) {
                     throw new ManagerSaveException("У подзадачи отсутствует Epic ID");
                 }
-                SubTask subTask = new SubTask(name, description, id, Integer.parseInt(epicId), status);
+                SubTask subTask = new SubTask(name, description, id, Integer.parseInt(epicId), status, startTime, duration);
                 subTask.setID(id);
                 return subTask;
 
