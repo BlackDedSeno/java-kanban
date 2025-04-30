@@ -1,13 +1,48 @@
 package main;
 
+import managerpackage.FileBackedTaskManager;
 import managerpackage.InMemoryTaskManager;
+import managerpackage.ManagerSaveException;
 import managerpackage.TaskManager;
 import tasks.*;
+
+import java.io.File;
 
 class Main {
     public static void main(String[] args) {
 
         TaskManager manager = new InMemoryTaskManager();
+
+        try {
+            File file = new File("tasks.csv");
+            TaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
+
+            Task task1 = new Task("Задача 1", "Выполнение задачи 1");
+            Task task2 = new Task("Задача 2", "Выполнение задачи 2");
+            fileBackedTaskManager.addNewTask(task1);
+            fileBackedTaskManager.addNewTask(task2);
+
+            Epic epic1 = new Epic("Эпик 1", "Описание эпика 1");
+            fileBackedTaskManager.addNewEpic(epic1);
+
+            SubTask subtask1 = new SubTask("Подзадача 1", "Описание подзадачи 1", epic1.getId());
+            fileBackedTaskManager.addNewSubTask(subtask1);
+
+            System.out.println("Все задачи после добавления:");
+            System.out.println(fileBackedTaskManager.getAllTasks());
+            System.out.println(fileBackedTaskManager.getAllEpics());
+            System.out.println(fileBackedTaskManager.getAllSubTasks());
+
+            TaskManager loadedManager = FileBackedTaskManager.loadFromFile(file);
+            System.out.println("\nЗагруженные данные:");
+            System.out.println("Задачи: " + loadedManager.getAllTasks());
+            System.out.println("Эпики: " + loadedManager.getAllEpics());
+            System.out.println("Подзадачи: " + loadedManager.getAllSubTasks());
+
+        } catch (ManagerSaveException e) {
+            System.err.println("Ошибка при работе с файлом: " + e.getMessage());
+        }
+
 
         Task task1 = new Task("Задача 1", "Выполнение задачи  1");
         Task task2 = new Task(null, null);
