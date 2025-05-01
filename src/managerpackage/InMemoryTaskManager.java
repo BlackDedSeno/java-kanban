@@ -12,16 +12,15 @@ import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     protected Map<Integer, Task> tasks = new HashMap<>();
-    protected Map<Integer, SubTask> subTasks = new HashMap<>();;
-    protected Map<Integer, Epic> epics = new HashMap<>();;
+    protected Map<Integer, SubTask> subTasks = new HashMap<>();
+    protected Map<Integer, Epic> epics = new HashMap<>();
     protected int newId = 0;
     protected HistoryManager<Task> historyManager;
 
     private final SortedSet<Task> prioritizedTasks = new TreeSet<>(
             Comparator.comparing(Task::getStartTime,
                             Comparator.nullsLast(Comparator.naturalOrder()))
-                    .thenComparing(Task::getId)
-    );
+                    .thenComparing(Task::getId));
 
     public InMemoryTaskManager() {
         tasks = new HashMap<>();
