@@ -17,10 +17,11 @@ public class InMemoryTaskManager implements TaskManager {
     protected int newId = 0;
     protected HistoryManager<Task> historyManager;
 
-    private final Set<Task> prioritizedTasks = new TreeSet<>(
+    private final SortedSet<Task> prioritizedTasks = new TreeSet<>(
             Comparator.comparing(Task::getStartTime,
                             Comparator.nullsLast(Comparator.naturalOrder()))
-                    .thenComparing(Task::getId));
+                    .thenComparing(Task::getId)
+    );
 
     public InMemoryTaskManager() {
         tasks = new HashMap<>();
