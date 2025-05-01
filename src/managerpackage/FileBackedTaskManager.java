@@ -91,6 +91,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 } else {
                     manager.tasks.put(task.getId(), task);
                 }
+
+                if (task.getStartTime() != null) {
+                    manager.getPrioritizedTasks().add(task);
+                }
             }
 
             manager.newId = maxId + 1;

@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 
 
 public class InMemoryTaskManager implements TaskManager {
-    protected Map<Integer, Task> tasks;
-    protected Map<Integer, SubTask> subTasks;
-    protected Map<Integer, Epic> epics;
+    protected Map<Integer, Task> tasks = new HashMap<>();
+    protected Map<Integer, SubTask> subTasks = new HashMap<>();;
+    protected Map<Integer, Epic> epics = new HashMap<>();;
     protected int newId = 0;
     protected HistoryManager<Task> historyManager;
 
-    private final TreeSet<Task> prioritizedTasks = new TreeSet<>(
+    private final Set<Task> prioritizedTasks = new TreeSet<>(
             Comparator.comparing(Task::getStartTime,
                             Comparator.nullsLast(Comparator.naturalOrder()))
                     .thenComparing(Task::getId));
@@ -155,12 +155,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeSubTaskById(int id) {
         SubTask task = subTasks.get(id);
+        if (task == null) return;
         removeFromPrioritized(task);
         int epicID = task.getepicID();
         Epic epic = epics.get(epicID);
         epic.removeSubIdByValue(id);
         subTasks.remove(id);
         historyManager.remove(id);
+        updateEpicTimes(epic);
         updateEpic(epic);
     }
 
@@ -200,6 +202,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void clearAllTasks() {
         tasks.keySet().forEach(historyManager::remove);
+        tasks.values().forEach(this::removeFromPrioritized);
         tasks.clear();
     }
 
@@ -228,6 +231,7 @@ public class InMemoryTaskManager implements TaskManager {
             addToPrioritized(subTask);
             Epic epic = epics.get(subTask.getepicID());
             if (epic != null) {
+                updateEpicTimes(epic);
                 updateEpic(epic);
             } else {
                 System.out.println("Эпик с ID " + subTask.getepicID() + " не найден для подзадачи " + id);
