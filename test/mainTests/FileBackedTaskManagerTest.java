@@ -1,7 +1,6 @@
-package test;
+package test.mainTests;
 
 import managerpackage.FileBackedTaskManager;
-import managerpackage.InMemoryHistoryManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import tasks.Epic;
@@ -11,7 +10,6 @@ import tasks.Task;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 

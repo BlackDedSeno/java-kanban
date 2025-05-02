@@ -6,6 +6,7 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public interface TaskManager {
     ArrayList<Task> getAllTasks();
@@ -20,11 +21,11 @@ public interface TaskManager {
 
     void addNewSubTask(SubTask subTask);
 
-    String getTask(int id);
+    Optional<Task> getTask(int id);
 
-    String getSubTask(int id);
+    Optional<SubTask> getSubTask(int id);
 
-    String getEpic(int id);
+    Optional<Epic> getEpic(int id);
 
     ArrayList<SubTask> getEpicSubTasks(int id);
 
