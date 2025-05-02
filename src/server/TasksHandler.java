@@ -1,7 +1,6 @@
 package server;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import managerpackage.TaskManager;
 import tasks.Task;
