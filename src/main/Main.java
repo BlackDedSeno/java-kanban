@@ -7,11 +7,20 @@ import managerpackage.TaskManager;
 import tasks.*;
 
 import java.io.File;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 class Main {
+    private static boolean isTimeOverlap(Task task1, Task task2) {
+        if (task1.getStartTime() == null || task2.getStartTime() == null) return false;
+        return !task1.getEndTime().isBefore(task2.getStartTime()) &&
+                !task2.getEndTime().isBefore(task1.getStartTime());
+    }
+
     public static void main(String[] args) {
 
         TaskManager manager = new InMemoryTaskManager();
+
 
         try {
             File file = new File("tasks.csv");
@@ -59,6 +68,10 @@ class Main {
         SubTask subtask1 = new SubTask("подзадача 1", "Выполнение подзадачи  1", epic1ID);
         SubTask subTask2 = new SubTask(null, null, epic1ID);
         SubTask subTask3 = new SubTask("задача 1", null, epic2ID);
+
+        subtask1.setStartTime(LocalDateTime.now().plusHours(3));
+        subtask1.setDuration(Duration.ofMinutes(90));
+
         manager.addNewSubTask(subtask1);
         manager.addNewSubTask(subTask2);
         manager.addNewSubTask(subTask3);
@@ -81,6 +94,43 @@ class Main {
         System.out.println("====================");
         manager.removeSubTaskById(sub2ID);
         manager.addNewSubTask(subTask3);
+
+        System.out.println("Приоритетный список задач");
+        manager.getPrioritizedTasks().forEach(task ->
+                System.out.printf("%s: %s (с %s до %s)\n",
+                        task.getClass().getSimpleName(),
+                        task.getName(),
+                        task.getStartTime(),
+                        task.getEndTime())
+        );
+
+        System.out.println("====================");
+
+        System.out.println("Проверка пересечений");
+        Task conflictTask = new Task("Конфликтная задача", "Должна вызвать ошибку");
+        conflictTask.setStartTime(subtask1.getStartTime().plusMinutes(30));  // инициируем перес-е с subtask1
+        conflictTask.setDuration(Duration.ofHours(1));
+
+        try {
+            manager.addNewTask(conflictTask);
+        } catch (ManagerSaveException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
+
+        try {
+            System.out.println("Попытка добавить задачу с временем:");
+            System.out.println("Начало: " + conflictTask.getStartTime());
+            System.out.println("Конец: " + conflictTask.getEndTime());
+            System.out.println("Пересекается с:");
+            manager.getPrioritizedTasks().stream()
+                    .filter(t -> isTimeOverlap(t, conflictTask))
+                    .forEach(t -> System.out.println("- " + t.getName() + " (" + t.getStartTime() + " - " + t.getEndTime() + ")"));
+
+            manager.addNewTask(conflictTask);
+            System.out.println("Ошибка: есть пересечение!");
+        } catch (ManagerSaveException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
 
         System.out.println("Обновление статуса эпика при добавлении новой подзадачи");
         System.out.println(manager.getEpic(epic2ID));
