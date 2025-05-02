@@ -51,6 +51,7 @@ public abstract class BaseHttpHandler implements HttpHandler {
             return new String(is.readAllBytes(), StandardCharsets.UTF_8);
         }
     }
+
     protected void sendBadRequest(HttpExchange exchange, String message) throws IOException {
         String response = "{\"error\":\"" + message + "\"}";
         exchange.getResponseHeaders().set("Content-Type", "application/json");
@@ -59,6 +60,7 @@ public abstract class BaseHttpHandler implements HttpHandler {
             os.write(response.getBytes(StandardCharsets.UTF_8));
         }
     }
+
     protected Optional<Integer> extractId(String query) {
         if (query == null) return Optional.empty();
 
