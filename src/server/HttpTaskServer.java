@@ -11,7 +11,7 @@ import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class HttpTaskServer implements AutoCloseable{
+public class HttpTaskServer implements AutoCloseable {
     private final HttpServer server;
     private final TaskManager manager;
     private final int port;
