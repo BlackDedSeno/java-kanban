@@ -83,14 +83,23 @@ public class EpicsHandler extends BaseHttpHandler  {
     }
 
     private void handleDelete(HttpExchange exchange, String query) throws IOException {
-        int id = Integer.parseInt(query.split("=")[1]);
-
-        try {
-            manager.removeEpicById(id);
-            sendText(exchange, "Epic deleted", 200);
-        } catch (NullPointerException e) {
-            sendText(exchange, "Epic not found", 404);
+        Optional<Integer> epicId = extractId(query);
+        if (epicId.isEmpty()) {
+            sendText(exchange, "Invalid ID", 400);
+            return;
         }
+
+        int id = epicId.get();
+        Optional<Epic> epic = manager.getEpic(id);
+
+        if (epic.isEmpty()) {
+            sendText(exchange, "Epic not found", 404);
+            return;
+        }
+
+        manager.removeEpicById(id);
+        exchange.sendResponseHeaders(204, -1);
     }
+
 }
 

@@ -81,15 +81,16 @@ public class SubtasksHandler extends BaseHttpHandler {
     private void handleDelete(HttpExchange exchange, String query) throws IOException {
         if (query == null) {
             manager.clearAllSubTasks();
-            sendText(exchange, "All subtasks deleted", 200);
+            exchange.sendResponseHeaders(204, -1); // 204 No Content
         } else {
             Optional<Integer> subTaskId = extractId(query);
             if (subTaskId.isPresent()) {
                 manager.removeSubTaskById(subTaskId.get());
-                sendText(exchange, "Subtask deleted", 200);
+                exchange.sendResponseHeaders(204, -1); // 204 вместо 200
             } else {
                 sendText(exchange, "Invalid ID", 400);
             }
         }
+        exchange.close();
     }
 }

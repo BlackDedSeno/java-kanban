@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.sun.net.httpserver.HttpExchange;
 import managerpackage.TaskManager;
 import tasks.Task;
@@ -64,16 +65,27 @@ public class TasksHandler extends BaseHttpHandler {
     }
 
     private void handlePost(HttpExchange exchange) throws IOException {
-        InputStreamReader reader = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
-        Task task = gson.fromJson(reader, Task.class);
+        try {
+            String json = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+            System.out.println("Received JSON: " + json);
 
-        if (task == null || task.getName() == null || task.getName().isEmpty()) { // Используем getName() вместо getTitle()
-            sendText(exchange, "Invalid task data", 400);  // Статус 400 для неправильных данных
-            return;
+            Task task = gson.fromJson(json, Task.class);
+
+            // Проверка обязательных полей
+            if (task.getName() == null || task.getName().trim().isEmpty()) {
+                sendBadRequest(exchange, "Task name is required");
+                return;
+            }
+
+            manager.addNewTask(task);
+            sendText(exchange, "Task created", 201);
+
+        } catch (JsonSyntaxException e) {
+            sendBadRequest(exchange, "Invalid JSON format");
+        } catch (Exception e) {
+            System.err.println("Error processing task: " + e.getMessage());
+            sendServerError(exchange, "Internal server error");
         }
-
-        manager.addNewTask(task);
-        sendText(exchange, "Task created", 201);
     }
 
     private void handlePut(HttpExchange exchange) throws IOException {
@@ -85,13 +97,15 @@ public class TasksHandler extends BaseHttpHandler {
 
     private void handleDelete(HttpExchange exchange, String query) throws IOException {
         if (query == null) {
-            manager.clearAllTasks();
-            sendText(exchange, "All tasks deleted", 200);
+            manager.clearAllSubTasks();
+            exchange.sendResponseHeaders(204, -1);
+            exchange.close();
         } else {
-            Optional<Integer> taskId = extractId(query);
-            if (taskId.isPresent()) {
-                manager.removeTaskById(taskId.get());
-                sendText(exchange, "Task deleted", 200);
+            Optional<Integer> subTaskId = extractId(query);
+            if (subTaskId.isPresent()) {
+                manager.removeSubTaskById(subTaskId.get());
+                exchange.sendResponseHeaders(204, -1);
+                exchange.close();
             } else {
                 sendText(exchange, "Invalid ID", 400);
             }

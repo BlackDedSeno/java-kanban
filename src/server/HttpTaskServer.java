@@ -1,18 +1,24 @@
 package server;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
 import managerpackage.Managers;
 import managerpackage.TaskManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
-public class HttpTaskServer {
+public class HttpTaskServer implements AutoCloseable{
     private final HttpServer server;
     private final TaskManager manager;
     private final int port;
-    private static final Gson gson = new Gson();
+    private static final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .registerTypeAdapter(Duration.class, new DurationAdapter())
+            .create();
 
     // Основной конструктор, позволяет задавать порт
     public HttpTaskServer(TaskManager manager, int port) throws IOException {
@@ -22,11 +28,8 @@ public class HttpTaskServer {
         setupContexts();
     }
 
-
-
-    // Старый конструктор по умолчанию на 8080
     public HttpTaskServer(TaskManager manager) throws IOException {
-        this(manager, 8080); // по умолчанию порт 8080
+        this(manager, 8080);
     }
 
     public void start() {
@@ -36,13 +39,14 @@ public class HttpTaskServer {
     }
 
     public void stop() {
-        System.out.println("Останавливаем сервер");
-        server.stop(0);
-        System.out.println("HTTP-сервер остановлен.");
+        if (server != null) {
+            server.stop(0);
+            System.out.println("Сервер остановлен на порту " + getPort());
+        }
     }
 
     public int getPort() {
-        return server.getAddress().getPort(); // ← фактически используемый порт
+        return server.getAddress().getPort();
     }
 
     public static Gson getGson() {
@@ -59,5 +63,10 @@ public class HttpTaskServer {
 
     public static void main(String[] args) throws IOException {
         new HttpTaskServer(Managers.getDefault()).start();
+    }
+
+    @Override
+    public void close() {
+        stop();
     }
 }
