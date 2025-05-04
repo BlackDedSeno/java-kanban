@@ -13,11 +13,11 @@ import java.util.Optional;
 
 public class EpicsHandler extends BaseHttpHandler  {
     private final TaskManager manager;
-    private final Gson gson;
+    /*private final Gson gson;*/
 
-    public EpicsHandler(TaskManager manager, Gson gson) {
+    public EpicsHandler(TaskManager manager/*, Gson gson*/) {
         this.manager = manager;
-        this.gson = gson;
+        /*this.gson = gson;*/
     }
 
     @Override
@@ -46,13 +46,13 @@ public class EpicsHandler extends BaseHttpHandler  {
     private void handleGet(HttpExchange exchange, String query) throws IOException {
         if (query == null) {
             ArrayList<Epic> epics = manager.getAllEpics();
-            sendText(exchange, gson.toJson(epics), OK);
+            sendText(exchange, GSON.toJson(epics), OK);
         } else {
             Optional<Integer> epicId = extractId(query);
             if (epicId.isPresent()) {
                 Optional<Epic> epicOpt = manager.getEpic(epicId.get());
                 if (epicOpt.isPresent()) {
-                    String epicJson = gson.toJson(epicOpt.get());
+                    String epicJson = GSON.toJson(epicOpt.get());
                     sendText(exchange, epicJson, OK);
                 } else {
                     sendText(exchange, "Epic not found", NOT_FOUND);
@@ -65,7 +65,7 @@ public class EpicsHandler extends BaseHttpHandler  {
 
     private void handlePost(HttpExchange exchange) throws IOException {
         InputStreamReader reader = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
-        Epic epic = gson.fromJson(reader, Epic.class);
+        Epic epic = GSON.fromJson(reader, Epic.class);
 
         if (epic != null) {
             manager.addNewEpic(epic);
@@ -77,7 +77,7 @@ public class EpicsHandler extends BaseHttpHandler  {
 
     private void handlePut(HttpExchange exchange) throws IOException {
         InputStreamReader reader = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
-        Epic epic = gson.fromJson(reader, Epic.class);
+        Epic epic = GSON.fromJson(reader, Epic.class);
         manager.updateEpic(epic);
         sendText(exchange, "Epic updated", OK);
     }

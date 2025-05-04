@@ -11,7 +11,7 @@ import java.util.List;
 
 public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
     private final TaskManager manager;
-    private final Gson gson = HttpTaskServer.getGson();
+    /*private final Gson gson = HttpTaskServer.getGson();*/
 
     public HistoryHandler(TaskManager manager) {
         this.manager = manager;
@@ -22,7 +22,7 @@ public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
         try (exchange) {
             if (GET.equals(exchange.getRequestMethod())) {
                 List<Task> history = manager.getHistory();
-                sendText(exchange, gson.toJson(history), OK);
+                sendText(exchange, GSON.toJson(history), OK);
             }
         } catch (Exception e) {
             sendServerError(exchange, "Ошибка при получении истории: " + e.getMessage());

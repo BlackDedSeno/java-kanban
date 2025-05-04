@@ -14,11 +14,11 @@ import java.util.Optional;
 
 public class TasksHandler extends BaseHttpHandler {
     private final TaskManager manager;
-    private final Gson gson;
+    /*private final Gson gson;*/
 
-    public TasksHandler(TaskManager manager, Gson gson) {
+    public TasksHandler(TaskManager manager/*, Gson gson*/) {
         this.manager = manager;
-        this.gson = gson;
+        /*this.gson = gson;*/
     }
 
     @Override
@@ -47,13 +47,13 @@ public class TasksHandler extends BaseHttpHandler {
     private void handleGet(HttpExchange exchange, String query) throws IOException {
         if (query == null) {
             ArrayList<Task> tasks = manager.getAllTasks();
-            sendText(exchange, gson.toJson(tasks), OK);
+            sendText(exchange, GSON.toJson(tasks), OK);
         } else {
             Optional<Integer> taskId = extractId(query);
             if (taskId.isPresent()) {
                 Optional<Task> taskOpt = manager.getTask(taskId.get());
                 if (taskOpt.isPresent()) {
-                    String taskJson = gson.toJson(taskOpt.get());
+                    String taskJson = GSON.toJson(taskOpt.get());
                     sendText(exchange, taskJson, OK);
                 } else {
                     sendText(exchange, "Task not found", NOT_FOUND);
@@ -69,7 +69,7 @@ public class TasksHandler extends BaseHttpHandler {
             String json = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
             System.out.println("Received JSON: " + json);
 
-            Task task = gson.fromJson(json, Task.class);
+            Task task = GSON.fromJson(json, Task.class);
 
             // Проверка обязательных полей
             if (task.getName() == null || task.getName().trim().isEmpty()) {
@@ -90,7 +90,7 @@ public class TasksHandler extends BaseHttpHandler {
 
     private void handlePut(HttpExchange exchange) throws IOException {
         InputStreamReader reader = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
-        Task task = gson.fromJson(reader, Task.class);
+        Task task = GSON.fromJson(reader, Task.class);
         manager.updateTask(task);
         sendText(exchange, "Task updated", 200);
     }
