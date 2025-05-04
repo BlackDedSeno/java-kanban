@@ -12,6 +12,8 @@ public class Epic extends Task {
 
     public Epic(String name, String descriprion) {
         super(name, descriprion);
+        this.startTime = null; // Явная инициализация
+        this.duration = Duration.ZERO;
         subtaskIDs = new ArrayList<>();
     }
 

@@ -1,4 +1,4 @@
-package test;
+package test.mainTests;
 
 import managerpackage.InMemoryHistoryManager;
 import org.junit.jupiter.api.Test;
