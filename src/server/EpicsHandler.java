@@ -39,26 +39,26 @@ public class EpicsHandler extends BaseHttpHandler  {
                 handleDelete(exchange, query);
                 break;
             default:
-                sendText(exchange, "Method Not Allowed", 405);
+                sendText(exchange, "Method Not Allowed", METHOD_NOT_ALLOWED);
         }
     }
 
     private void handleGet(HttpExchange exchange, String query) throws IOException {
         if (query == null) {
             ArrayList<Epic> epics = manager.getAllEpics();
-            sendText(exchange, gson.toJson(epics), 200);
+            sendText(exchange, gson.toJson(epics), OK);
         } else {
             Optional<Integer> epicId = extractId(query);
             if (epicId.isPresent()) {
                 Optional<Epic> epicOpt = manager.getEpic(epicId.get());
                 if (epicOpt.isPresent()) {
                     String epicJson = gson.toJson(epicOpt.get());
-                    sendText(exchange, epicJson, 200);
+                    sendText(exchange, epicJson, OK);
                 } else {
-                    sendText(exchange, "Epic not found", 404);
+                    sendText(exchange, "Epic not found", NOT_FOUND);
                 }
             } else {
-                sendText(exchange, "Invalid ID", 400);
+                sendText(exchange, "Invalid ID", BAD_REQUEST);
             }
         }
     }
@@ -69,7 +69,7 @@ public class EpicsHandler extends BaseHttpHandler  {
 
         if (epic != null) {
             manager.addNewEpic(epic);
-            sendText(exchange, "Epic created", 201);
+            sendText(exchange, "Epic created", CREATED);
         } else {
             sendBadRequest(exchange, "Invalid Epic JSON");
         }
@@ -79,13 +79,13 @@ public class EpicsHandler extends BaseHttpHandler  {
         InputStreamReader reader = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
         Epic epic = gson.fromJson(reader, Epic.class);
         manager.updateEpic(epic);
-        sendText(exchange, "Epic updated", 200);
+        sendText(exchange, "Epic updated", OK);
     }
 
     private void handleDelete(HttpExchange exchange, String query) throws IOException {
         Optional<Integer> epicId = extractId(query);
         if (epicId.isEmpty()) {
-            sendText(exchange, "Invalid ID", 400);
+            sendText(exchange, "Invalid ID", BAD_REQUEST);
             return;
         }
 
@@ -93,7 +93,7 @@ public class EpicsHandler extends BaseHttpHandler  {
         Optional<Epic> epic = manager.getEpic(id);
 
         if (epic.isEmpty()) {
-            sendText(exchange, "Epic not found", 404);
+            sendText(exchange, "Epic not found", NOT_FOUND);
             return;
         }
 

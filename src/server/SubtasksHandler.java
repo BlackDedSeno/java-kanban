@@ -39,26 +39,26 @@ public class SubtasksHandler extends BaseHttpHandler {
                 handleDelete(exchange, query);
                 break;
             default:
-                sendText(exchange, "Method Not Allowed", 405);
+                sendText(exchange, "Method Not Allowed", METHOD_NOT_ALLOWED);
         }
     }
 
     private void handleGet(HttpExchange exchange, String query) throws IOException {
         if (query == null) {
             ArrayList<SubTask> subtasks = manager.getAllSubTasks();
-            sendText(exchange, gson.toJson(subtasks), 200);
+            sendText(exchange, gson.toJson(subtasks), OK);
         } else {
             Optional<Integer> subTaskId = extractId(query);
             if (subTaskId.isPresent()) {
                 Optional<SubTask> subTaskOpt = manager.getSubTask(subTaskId.get());
                 if (subTaskOpt.isPresent()) {
                     String subTaskJson = gson.toJson(subTaskOpt.get());
-                    sendText(exchange, subTaskJson, 200);
+                    sendText(exchange, subTaskJson, OK);
                 } else {
-                    sendText(exchange, "Subtask not found", 404);
+                    sendText(exchange, "Subtask not found", NOT_FOUND);
                 }
             } else {
-                sendText(exchange, "Invalid ID", 400);
+                sendText(exchange, "Invalid ID", BAD_REQUEST);
             }
         }
     }

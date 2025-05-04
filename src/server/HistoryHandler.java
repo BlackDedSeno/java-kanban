@@ -19,13 +19,10 @@ public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        try {
-            if ("GET".equals(exchange.getRequestMethod())) {
+        try (exchange) {
+            if (GET.equals(exchange.getRequestMethod())) {
                 List<Task> history = manager.getHistory();
-                sendText(exchange, gson.toJson(history), 200);
-            } else {
-                exchange.sendResponseHeaders(405, 0);
-                exchange.close();
+                sendText(exchange, gson.toJson(history), OK);
             }
         } catch (Exception e) {
             sendServerError(exchange, "Ошибка при получении истории: " + e.getMessage());

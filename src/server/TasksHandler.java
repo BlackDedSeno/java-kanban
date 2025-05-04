@@ -40,26 +40,26 @@ public class TasksHandler extends BaseHttpHandler {
                 handleDelete(exchange, query);
                 break;
             default:
-                sendText(exchange, "Method Not Allowed", 405);
+                sendText(exchange, "Method Not Allowed", METHOD_NOT_ALLOWED);
         }
     }
 
     private void handleGet(HttpExchange exchange, String query) throws IOException {
         if (query == null) {
             ArrayList<Task> tasks = manager.getAllTasks();
-            sendText(exchange, gson.toJson(tasks), 200);
+            sendText(exchange, gson.toJson(tasks), OK);
         } else {
             Optional<Integer> taskId = extractId(query);
             if (taskId.isPresent()) {
                 Optional<Task> taskOpt = manager.getTask(taskId.get());
                 if (taskOpt.isPresent()) {
                     String taskJson = gson.toJson(taskOpt.get());
-                    sendText(exchange, taskJson, 200);
+                    sendText(exchange, taskJson, OK);
                 } else {
-                    sendText(exchange, "Task not found", 404);
+                    sendText(exchange, "Task not found", NOT_FOUND);
                 }
             } else {
-                sendText(exchange, "Invalid ID", 400);
+                sendText(exchange, "Invalid ID", BAD_REQUEST);
             }
         }
     }

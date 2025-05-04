@@ -22,9 +22,9 @@ public class PrioritizedHandler extends BaseHttpHandler implements HttpHandler {
         try {
             if ("GET".equals(exchange.getRequestMethod())) {
                 List<Task> prioritized = List.copyOf(manager.getPrioritizedTasks());
-                sendText(exchange, gson.toJson(prioritized), 200);
+                sendText(exchange, gson.toJson(prioritized), OK);
             } else {
-                exchange.sendResponseHeaders(405, 0);
+                exchange.sendResponseHeaders(METHOD_NOT_ALLOWED, 0);
                 exchange.close();
             }
         } catch (Exception e) {
